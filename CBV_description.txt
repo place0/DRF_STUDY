@@ -80,3 +80,9 @@ FBV는 기본적인 뷰 기능만 제공하므로, 뷰의 기능을 구현할 �
 
 4.제너릭 날짜 뷰(Generic Date View)
     - YearArchiveView : 주어진 연도에 해당하는 객체 출력
+    - MonthArchiveView : 주어진 월에 해당하는 객체 출력
+    - DayArchiveView : 주어진 날짜에 해당하는 객체 출력
+    - TodayArchiveView : 오늘 날짜에 해당하는 객체 출력
+    - DateDetailView : 주어진 연,월,일 PK(또는 슬러그)에 해당하는 객체 출력
+
+📌 
