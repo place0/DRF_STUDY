@@ -29,6 +29,8 @@ class BlogAPIView(APIView):
 
 	def put(self, request, pk):
 		blog = get_object_or_404(Blog, id=pk)
+		blog.title = request.data.get('title', blog.title)
+		blog.body = request.data.get('body', blog.body)
 		serializer = CreateSerializer(blog, data=request.data)
 		if serializer.is_valid():
 			serializer.save()

@@ -15,3 +15,7 @@ class CreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog
         fields = ('title', 'body')
+        extra_kwargs = {
+            'title' : {'required':False},
+            'body' : {'required':False}
+        }
