@@ -9,7 +9,7 @@ class BlogImageSerializer(serializers.ModelSerializer):
         fields = ('id', 'image')
 
 class BlogSerializer(serializers.ModelSerializer):
-    images = BlogImageSerializer(source='blogimage_set', many=True, read_only=True)
+    images = serializers.ListField(child=serializers.ImageField(max_length=None, allow_empty_file=True, required=False), required=False)
 
     class Meta:
         model = Blog
@@ -21,6 +21,8 @@ class BlogSerializer(serializers.ModelSerializer):
         if images:
             for image_data in images:
                 BlogImage.objects.create(blog=instance, image=image_data)
+        else:
+            BlogImage.objects.create(blog=instance, image=BlogImage.default_image())
         return instance
 
 class DetailSerializer(serializers.ModelSerializer):
@@ -31,7 +33,10 @@ class DetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'body', 'created', 'images')
 
 class CreateSerializer(serializers.ModelSerializer):
-    images = serializers.ListField(child=serializers.ImageField(), write_only=True)
+    images = serializers.ListField(
+        child=serializers.ImageField(max_length=None, allow_empty_file=True, required=False), 
+        required=False
+    )
 
     class Meta:
         model = Blog
@@ -48,4 +53,6 @@ class CreateSerializer(serializers.ModelSerializer):
         if images:
             for image_data in images:
                 BlogImage.objects.create(blog=instance, image=image_data)
+        else:
+            BlogImage.objects.create(blog=instance, image=BlogImage.default_image())
         return instance
