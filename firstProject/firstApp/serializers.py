@@ -1,6 +1,7 @@
 from .models import Blog, BlogImage
 from rest_framework import serializers
 
+
 class BlogImageSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)
 
@@ -8,12 +9,14 @@ class BlogImageSerializer(serializers.ModelSerializer):
         model = BlogImage
         fields = ('id', 'image')
 
+
 class BlogSerializer(serializers.ModelSerializer):
-    images = serializers.ListField(child=serializers.ImageField(max_length=None, allow_empty_file=True, required=False), required=False)
+    images = BlogImageSerializer(
+        source='blogimage_set', many=True, read_only=True)
 
     class Meta:
         model = Blog
-        fields = ('id', 'title', 'created', 'images')
+        fields = ('id', 'title', 'created', 'images', 'pinned_order')
 
     def create(self, validated_data):
         images = validated_data.pop('images', None)
@@ -21,22 +24,21 @@ class BlogSerializer(serializers.ModelSerializer):
         if images:
             for image_data in images:
                 BlogImage.objects.create(blog=instance, image=image_data)
-        else:
-            BlogImage.objects.create(blog=instance, image=BlogImage.default_image())
         return instance
 
+
 class DetailSerializer(serializers.ModelSerializer):
-    images = BlogImageSerializer(source='blogimage_set', many=True, read_only=True)
-    
+    images = BlogImageSerializer(
+        source='blogimage_set', many=True, read_only=True)
+
     class Meta:
         model = Blog
-        fields = ('id', 'title', 'body', 'created', 'images')
+        fields = ('id', 'title', 'body', 'created', 'images', 'pinned_order')
+
 
 class CreateSerializer(serializers.ModelSerializer):
     images = serializers.ListField(
-        child=serializers.ImageField(max_length=None, allow_empty_file=True, required=False), 
-        required=False
-    )
+        child=serializers.ImageField(), write_only=True)
 
     class Meta:
         model = Blog
@@ -53,6 +55,4 @@ class CreateSerializer(serializers.ModelSerializer):
         if images:
             for image_data in images:
                 BlogImage.objects.create(blog=instance, image=image_data)
-        else:
-            BlogImage.objects.create(blog=instance, image=BlogImage.default_image())
         return instance
