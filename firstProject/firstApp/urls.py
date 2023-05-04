@@ -5,7 +5,5 @@ from . import views
 
 urlpatterns = [
     path('blog/', views.BlogsAPIView.as_view()),
-    path('blog/<int:pk>/', views.BlogAPIView.as_view()),
+    path('blogs/<int:pk>/', views.BlogAPIView.as_view()),
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)

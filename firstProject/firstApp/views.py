@@ -27,17 +27,7 @@ class BlogAPIView(APIView):
 		serializer = DetailSerializer(blog)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
-	def put(self, request, pk):
-		blog = get_object_or_404(Blog, id=pk)
-		blog.title = request.data.get('title', blog.title)
-		blog.body = request.data.get('body', blog.body)
-		serializer = CreateSerializer(blog, data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status=status.HTTP_200_OK)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 	def delete(self, request, pk):
-		blog = get_object_or_404(Blog, pk=pk)
+		blog = get_object_or_404(Blog, id=pk)
 		blog.delete()
 		return Response()
